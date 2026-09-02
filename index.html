@@ -1,0 +1,876 @@
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap');
+
+  :root{
+    --ink:#16191d;
+    --steel:#5c656f;
+    --hair:#d5d9de;
+    --pale:#eceef1;
+    --paper:#ffffff;
+    --done:#0f6b46;
+    --heavy:#16191d;
+  }
+
+  *{box-sizing:border-box}
+
+  .x3{
+    font-family:'Barlow',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    color:var(--ink);
+    background:var(--paper);
+    max-width:1000px;
+    margin:0 auto;
+    padding:20px 16px 60px;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .x3 h1,.x3 h2,.x3 h3,.x3 .cond{
+    font-family:'Barlow Condensed','Barlow',-apple-system,'Helvetica Neue',sans-serif;
+  }
+
+  /* ---------- masthead ---------- */
+  .mast{border-bottom:3px solid var(--ink);padding-bottom:14px;margin-bottom:20px}
+  .mast h1{
+    font-size:clamp(30px,8vw,52px);
+    line-height:.92;
+    font-weight:700;
+    letter-spacing:-.015em;
+    margin:0 0 6px;
+  }
+  .mast p{margin:0;font-size:14px;color:var(--steel);line-height:1.45;max-width:52ch}
+
+  /* ---------- density strip (the signature) ---------- */
+  .strip{margin:22px 0 8px}
+  .strip-rail{
+    display:flex;align-items:flex-end;gap:2px;
+    height:56px;padding:0 1px;
+    border-bottom:2px solid var(--ink);
+  }
+  .tick{flex:1 1 0;min-width:0;border-radius:1px 1px 0 0;background:var(--pale);transition:background .18s,height .18s}
+  .tick.lvl3{height:100%}
+  .tick.lvl2{height:60%}
+  .tick.lvl1{height:34%}
+  .tick.lvl0{height:14%}
+  .tick.on{background:var(--done)}
+  .tick.gap{flex:0 0 5px;background:none !important;height:100% !important;border-left:1px dotted var(--hair)}
+  .strip-legend{
+    display:flex;justify-content:space-between;
+    font-size:11px;color:var(--steel);margin-top:6px;letter-spacing:.02em;
+  }
+
+  /* ---------- counters ---------- */
+  .counts{display:flex;gap:0;margin:18px 0 26px;border:1px solid var(--hair)}
+  .counts div{flex:1;padding:12px 10px;border-right:1px solid var(--hair)}
+  .counts div:last-child{border-right:0}
+  .counts b{
+    display:block;font-family:'Barlow Condensed','Barlow',sans-serif;
+    font-size:30px;font-weight:700;line-height:1;letter-spacing:-.01em;
+  }
+  .counts span{display:block;font-size:11.5px;color:var(--steel);margin-top:4px;line-height:1.25}
+
+  /* ---------- setup row ---------- */
+  .setup{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin-bottom:26px}
+  .setup label{font-size:12px;color:var(--steel);display:block;margin-bottom:4px}
+  .setup input{
+    font-family:inherit;font-size:15px;padding:7px 9px;
+    border:1px solid var(--hair);border-radius:3px;background:#fff;color:var(--ink);
+  }
+  .setup input[type=number]{width:88px}
+  .btn{
+    font-family:inherit;font-size:13px;padding:8px 13px;
+    background:#fff;border:1px solid var(--hair);border-radius:3px;
+    color:var(--steel);cursor:pointer;
+  }
+  .btn:hover{border-color:var(--ink);color:var(--ink)}
+
+  /* ---------- blocks & weeks ---------- */
+  .block-head{
+    display:flex;align-items:baseline;gap:10px;
+    margin:34px 0 4px;padding-bottom:5px;border-bottom:2px solid var(--ink);
+  }
+  .block-head h2{font-size:22px;font-weight:700;margin:0;letter-spacing:-.005em}
+  .block-head em{font-style:normal;font-size:13px;color:var(--steel)}
+
+  .week{border-bottom:1px solid var(--hair);padding:14px 0}
+  .week-top{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+  .week-no{
+    font-family:'Barlow Condensed','Barlow',sans-serif;
+    font-size:17px;font-weight:600;min-width:60px;
+  }
+  .week-meta{font-size:12px;color:var(--steel);flex:1}
+  .wt{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--steel)}
+  .wt input{
+    width:66px;font-family:inherit;font-size:13px;padding:4px 6px;
+    border:1px solid var(--hair);border-radius:3px;text-align:right;color:var(--ink);
+  }
+
+  .days{display:grid;grid-template-columns:1fr;gap:5px}
+  @media(min-width:760px){.days{grid-template-columns:repeat(7,1fr)}}
+
+  .day{
+    display:flex;align-items:center;gap:9px;
+    padding:9px 10px;border:1px solid var(--hair);border-radius:3px;
+    cursor:pointer;background:#fff;
+    -webkit-tap-highlight-color:transparent;
+  }
+  @media(min-width:760px){
+    .day{flex-direction:column;align-items:stretch;gap:6px;min-height:88px}
+  }
+  .day.res{border-color:var(--heavy);border-width:2px;background:#fafbfc}
+  .day.rest{border-style:dashed}
+  .day.on{background:#eef6f1;border-color:var(--done)}
+  .day:focus-visible{outline:2px solid var(--done);outline-offset:2px}
+
+  .box{
+    flex:0 0 auto;width:19px;height:19px;border:2px solid var(--hair);border-radius:3px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:13px;color:#fff;line-height:1;
+  }
+  .day.res .box{border-color:var(--heavy)}
+  .day.on .box{background:var(--done);border-color:var(--done)}
+
+  .day-body{flex:1;min-width:0}
+  .dow{
+    font-size:10.5px;color:var(--steel);letter-spacing:.04em;
+    display:none;
+  }
+  @media(min-width:760px){.dow{display:block}}
+  .wname{
+    font-family:'Barlow Condensed','Barlow',sans-serif;
+    font-size:16px;font-weight:600;line-height:1.1;letter-spacing:.005em;
+  }
+  .day.res .wname{font-weight:700}
+  .tag{font-size:10.5px;color:var(--steel);margin-top:2px;line-height:1.2}
+  .day.res .tag{color:var(--heavy);font-weight:600}
+
+  /* ---------- weight log ---------- */
+  .log{margin-top:40px;border-top:3px solid var(--ink);padding-top:18px}
+  .log h3{font-size:20px;font-weight:700;margin:0 0 8px}
+  .log-add{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-bottom:18px}
+  .log-add label{font-size:12px;color:var(--steel);display:block;margin-bottom:4px}
+  .log-add input{
+    font-family:inherit;font-size:16px;padding:8px 9px;
+    border:1px solid var(--hair);border-radius:3px;color:var(--ink);background:#fff;
+  }
+  .log-add input[type=number]{width:110px}
+  .btn-go{background:var(--ink);color:#fff;border-color:var(--ink);padding:10px 16px;font-size:14px}
+  .btn-go:hover{background:#000;color:#fff}
+
+  .log-stats{display:flex;border:1px solid var(--hair);margin-bottom:16px}
+  .log-stats div{flex:1;padding:11px 9px;border-right:1px solid var(--hair)}
+  .log-stats div:last-child{border-right:0}
+  .log-stats b{
+    display:block;font-family:'Barlow Condensed','Barlow',sans-serif;
+    font-size:clamp(20px,5.2vw,27px);font-weight:700;line-height:1;
+  }
+  .log-stats span{display:block;font-size:10.5px;color:var(--steel);margin-top:4px;line-height:1.25}
+
+  .views{display:flex;gap:6px;margin-bottom:10px}
+  .vbtn{
+    font-family:inherit;font-size:13px;padding:6px 14px;cursor:pointer;
+    background:#fff;border:1px solid var(--hair);border-radius:3px;color:var(--steel);
+  }
+  .vbtn.on{background:var(--ink);border-color:var(--ink);color:#fff}
+
+  .chart-wrap{border:1px solid var(--hair);border-radius:3px;padding:6px;margin-bottom:14px}
+  #chart{width:100%;height:auto;display:block}
+  .empty{font-size:13px;color:var(--steel);margin:0 0 14px}
+
+  .entries{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+  .ent{
+    display:flex;align-items:baseline;gap:7px;font-size:13px;
+    border:1px solid var(--hair);border-radius:3px;padding:5px 9px;background:#fff;
+    cursor:pointer;
+  }
+  .ent b{font-weight:600}
+  .ent span{color:var(--steel);font-size:11.5px}
+  .ent:hover{border-color:#b03a2e;color:#b03a2e}
+  .ent:hover span{color:#b03a2e}
+
+  /* ---------- fuel panel ---------- */
+  .fuel{margin-top:40px;border-top:3px solid var(--ink);padding-top:18px}
+  .fuel h3{font-size:20px;font-weight:700;margin:0 0 8px}
+  .fuel-lead{margin:0 0 16px;font-size:13.5px;color:var(--steel);line-height:1.5;max-width:60ch}
+  .fuel-inputs{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:18px}
+  .fuel-inputs label{font-size:12px;color:var(--steel);display:block;margin-bottom:4px}
+  .fuel-inputs input{
+    width:96px;font-family:inherit;font-size:15px;padding:7px 9px;
+    border:1px solid var(--hair);border-radius:3px;color:var(--ink);background:#fff;
+  }
+  .macros{display:flex;border:2px solid var(--ink);margin-bottom:12px}
+  .macros div{flex:1;padding:13px 10px;border-right:1px solid var(--hair)}
+  .macros div:last-child{border-right:0}
+  .macros b{
+    display:block;font-family:'Barlow Condensed','Barlow',sans-serif;
+    font-size:clamp(24px,6vw,34px);font-weight:700;line-height:1;
+  }
+  .macros span{display:block;font-size:11px;color:var(--steel);margin-top:4px;line-height:1.25}
+  .fuel-math{font-size:12px;color:var(--steel);line-height:1.5;margin:0 0 20px;max-width:70ch}
+  .fuel-notes{margin:0;display:grid;gap:14px}
+  @media(min-width:700px){.fuel-notes{grid-template-columns:1fr 1fr;gap:16px 28px}}
+  .fuel-notes dt{
+    font-family:'Barlow Condensed','Barlow',sans-serif;
+    font-size:16px;font-weight:600;margin-bottom:2px;
+  }
+  .fuel-notes dd{margin:0;font-size:13.5px;color:var(--steel);line-height:1.5;max-width:46ch}
+
+  /* ---------- rules panel ---------- */
+  .rules{margin-top:40px;border-top:3px solid var(--ink);padding-top:18px}
+  .rules h3{font-size:20px;font-weight:700;margin:0 0 12px}
+  .rules dl{margin:0;display:grid;gap:14px}
+  @media(min-width:700px){.rules dl{grid-template-columns:1fr 1fr;gap:16px 28px}}
+  .rules dt{
+    font-family:'Barlow Condensed','Barlow',sans-serif;
+    font-size:16px;font-weight:600;margin-bottom:2px;
+  }
+  .rules dd{margin:0;font-size:13.5px;color:var(--steel);line-height:1.5;max-width:46ch}
+  .src{margin-top:20px;font-size:11.5px;color:var(--steel);line-height:1.5;max-width:70ch}
+
+  .saved{font-size:11.5px;color:var(--steel);margin-top:14px;min-height:16px}
+
+  /* ---------- print ---------- */
+  @media print{
+    .x3{max-width:100%;padding:0}
+    .setup,.btn,.saved,.strip{display:none}
+    .counts{margin:10px 0 16px}
+    .block-head{page-break-after:avoid;margin-top:16px}
+    .week{page-break-inside:avoid;padding:8px 0}
+    .days{grid-template-columns:repeat(7,1fr)}
+    .day{min-height:64px;flex-direction:column;align-items:stretch;background:#fff !important}
+    .day.on{background:#fff !important}
+    .day.on .box{background:#fff;border-color:#000;color:#000}
+    .dow{display:block}
+    .rules{page-break-before:always}
+    .fuel{page-break-before:always}
+    .fuel-inputs{display:none}
+  }
+</style>
+
+<div class="x3">
+  <div class="mast">
+    <h1>P90X3 Mass<br>13-week log</h1>
+    <p>The Mass calendar, built around resistance days, with Dynamix in place of the yoga sessions. Tap any day to mark it done. Everything saves on this device, and it prints clean if you'd rather keep it on the fridge.</p>
+  </div>
+
+  <div class="strip">
+    <div class="strip-rail" id="rail"></div>
+    <div class="strip-legend"><span>Week 1</span><span>Week 7</span><span>Week 13</span></div>
+  </div>
+
+  <div class="counts">
+    <div><b id="c-done">0</b><span>days done of <span id="t-all">91</span></span></div>
+    <div><b id="c-res">0</b><span>resistance days of <span id="t-res">—</span></span></div>
+    <div><b id="c-week">—</b><span>current week</span></div>
+    <div><b id="c-wt">—</b><span>lb to goal</span></div>
+  </div>
+
+  <div class="setup">
+    <div>
+      <label for="start">Day 1 date</label>
+      <input type="date" id="start">
+    </div>
+    <div>
+      <label for="sw">Starting weight (lb)</label>
+      <input type="number" id="sw" step="0.5" value="186">
+    </div>
+    <div>
+      <label for="gw">Goal weight (lb)</label>
+      <input type="number" id="gw" step="0.5" value="177">
+    </div>
+    <button class="btn" id="print">Print or save as PDF</button>
+    <button class="btn" id="reset">Clear all check marks</button>
+    <button class="btn" id="backup">Back up to a file</button>
+    <button class="btn" id="restorebtn">Restore from a backup</button>
+    <input type="file" id="restorefile" accept="application/json,.json" style="display:none">
+  </div>
+
+  <div id="cal"></div>
+
+  <div class="log">
+    <h3>Weight log</h3>
+    <p class="fuel-lead">Weigh in first thing, after the bathroom, before you eat. Daily numbers swing two or three pounds on water alone, so the heavy line is the seven-day average — that's the one that tells you the truth.</p>
+
+    <div class="log-add">
+      <div><label for="ld">Date</label><input type="date" id="ld"></div>
+      <div><label for="lw">Weight (lb)</label><input type="number" id="lw" step="0.1" placeholder="186.0"></div>
+      <button class="btn btn-go" id="ladd">Log it</button>
+    </div>
+
+    <div class="log-stats">
+      <div><b id="s-now">—</b><span>7-day average</span></div>
+      <div><b id="s-rate">—</b><span>lb per week</span></div>
+      <div><b id="s-total">—</b><span>lb since start</span></div>
+      <div><b id="s-eta">—</b><span>weeks to goal</span></div>
+    </div>
+
+    <div class="views">
+      <button class="vbtn on" data-v="d">Daily</button>
+      <button class="vbtn" data-v="w">Weekly</button>
+      <button class="vbtn" data-v="m">Monthly</button>
+    </div>
+
+    <div class="chart-wrap"><svg id="chart" viewBox="0 0 640 260" preserveAspectRatio="xMidYMid meet"></svg></div>
+    <p class="empty" id="empty">No weigh-ins yet. Log today's and the chart appears.</p>
+
+    <div class="entries" id="entries"></div>
+  </div>
+
+  <div class="fuel">
+    <h3>Daily fuel</h3>
+    <p class="fuel-lead">Worked out from Mifflin–St Jeor, six training days a week, and a deficit held under the 500-calorie ceiling. Recalculates from your most recent weigh-in, so the targets come down as you do.</p>
+
+    <div class="fuel-inputs">
+      <div><label for="ht">Height (in)</label><input type="number" id="ht" value="70"></div>
+      <div><label for="ag">Age</label><input type="number" id="ag" value="42"></div>
+      <div><label for="cb">Carb ceiling (g)</label><input type="number" id="cb" value="125" step="5"></div>
+    </div>
+
+    <div class="macros">
+      <div><b id="m-cal">—</b><span>calories a day</span></div>
+      <div><b id="m-pro">—</b><span>g protein</span></div>
+      <div><b id="m-carb">—</b><span>g carbs</span></div>
+      <div><b id="m-fat">—</b><span>g fat</span></div>
+    </div>
+
+    <p class="fuel-math" id="m-math"></p>
+
+    <dl class="fuel-notes">
+      <dt>Protein is the number that matters most</dt>
+      <dd>Set at 2.1 g per kg of bodyweight. In a deficit this is what keeps the scale loss coming from fat rather than muscle, and it's the hardest target to hit by accident.</dd>
+
+      <dt>Carbs sit low, but not at zero</dt>
+      <dd>Held at your ceiling and best spent around resistance days. On Total Synergistics, The Challenge, Incinerator and the eccentric days, put most of them before and after training. On mobility days you'll naturally run lower.</dd>
+
+      <dt>Fat fills the rest</dt>
+      <dd>Whatever's left after protein and carbs. It won't drop below roughly 0.8 g per kg, which is the floor worth keeping for hormone production.</dd>
+
+      <dt>Expect about 0.9 lb a week</dt>
+      <dd>That puts 186 near 176 somewhere around week 11. If you're dropping faster than 1.5 lb a week for two weeks running, the deficit is too steep — eat more, not less.</dd>
+    </dl>
+  </div>
+
+  <div class="rules">
+    <h3>Hold these three while you run it</h3>
+    <dl>
+      <dt>Protein around 170 g a day</dt>
+      <dd>Roughly 2 g per kg at 186 lb. In an AJCN trial, 2.4 g/kg beat 1.2 g/kg for holding lean mass and losing fat during a deficit. Anywhere in that upper range works.</dd>
+
+      <dt>Deficit under 500 calories</dt>
+      <dd>A 2025 network meta-analysis on exercise during calorie restriction recommends staying inside 500 kcal/day when the goal is preserving lean mass. Deeper is where the cortisol problem you asked about starts.</dd>
+
+      <dt>Heavy enough that 8–12 is hard</dt>
+      <dd>Load is what signals your body to keep the muscle. On resistance days the last two reps should be a genuine fight. Note the weight you used so next round has a target.</dd>
+
+      <dt>30 minutes is enough</dt>
+      <dd>A recent trial found high-volume resistance work in a deficit spared no more lean mass than lower volume, though it did build more strength. Longer sessions cost recovery you'd rather spend elsewhere.</dd>
+    </dl>
+
+    <p class="src">Schedule taken from the published P90X3 Mass calendar, with one change: every X3 Yoga day is replaced by Dynamix, which fills the same mobility and recovery slot. In the transition weeks Dynamix already sits on day 2, so those swaps use Accelerator instead. Categories follow Beachbody's own grouping, so The Warrior counts as resistance and Agility X, Triometrics and Decelerator count as power. Bold-bordered days are the resistance days.</p>
+    <p class="saved" id="saved"></p>
+  </div>
+</div>
+
+<script>
+const KEY='p90x3-mass-v2';
+
+const RES=['Total Synergistics','The Challenge','Incinerator','The Warrior','Eccentric Upper','Eccentric Lower'];
+const POW=['Agility X','Triometrics','Decelerator'];
+const MOB=['Pilates X','Isometrix','Dynamix'];
+
+function kind(n){
+  if(n.indexOf('Rest')===0) return 'rest';
+  if(RES.includes(n)) return 'res';
+  if(POW.includes(n)) return 'pow';
+  if(MOB.includes(n)) return 'mob';
+  if(n.indexOf('Fit Test')>-1) return 'mob';
+  return 'car';
+}
+function label(k){
+  return {res:'Resistance',pow:'Power',car:'Cardio',mob:'Core, flex & balance',rest:'Rest'}[k];
+}
+function level(k){ return {res:3,pow:2,car:2,mob:1,rest:0}[k]; }
+
+const A=['Total Synergistics','Agility X','Dynamix','The Challenge','Pilates X','Incinerator','Rest'];
+const B=['Eccentric Upper','Eccentric Lower','Dynamix','Eccentric Upper','Eccentric Lower','MMX','Rest'];
+const T1=['Isometrix','Dynamix','The Warrior','Pilates X','Agility X','Accelerator','Rest'];
+const T2=['Isometrix','Dynamix','The Warrior','Pilates X','Decelerator','Accelerator','Rest'];
+const T3=['Isometrix','Accelerator','Decelerator','Eccentric Lower','Eccentric Upper','Dynamix','Final Fit Test'];
+
+const WEEKS=[A,A,A,T1,B,B,B,T2,B,A,B,A,T3];
+
+const BLOCKS=[
+  {name:'Block 1 · Foundation',note:'Weeks 1–4 · three resistance days a week',weeks:[1,2,3,4]},
+  {name:'Block 2 · Eccentric',note:'Weeks 5–8 · four resistance days, slow negatives, heaviest loads',weeks:[5,6,7,8]},
+  {name:'Block 3 · Alternating',note:'Weeks 9–13 · eccentric and foundation weeks trade off',weeks:[9,10,11,12,13]}
+];
+
+const DOW=['Day 1','Day 2','Day 3','Day 4','Day 5','Day 6','Day 7'];
+
+let state={done:{},weights:{},log:{},start:'',sw:'',gw:''};
+
+/* ---------- storage: localStorage, no network, no Claude ---------- */
+function load(){
+  try{
+    const raw=localStorage.getItem(KEY);
+    if(raw) state=Object.assign(state,JSON.parse(raw));
+  }catch(e){ /* nothing stored yet, or storage blocked */ }
+}
+let saveTimer;
+function save(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(()=>{
+    try{
+      localStorage.setItem(KEY,JSON.stringify(state));
+      const t=new Date().toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});
+      note('Saved on this device at '+t+'.');
+    }catch(e){
+      note('Could not save. If you are in a Private browsing tab, switch to a normal tab.');
+    }
+  },250);
+}
+
+/* ---------- backup ---------- */
+function backup(){
+  const text=JSON.stringify(state,null,2);
+  const name='p90x3-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  let url=null, revoke=false;
+  try{
+    url=URL.createObjectURL(new Blob([text],{type:'application/json'}));
+    revoke=true;
+  }catch(e){
+    url='data:application/json;charset=utf-8,'+encodeURIComponent(text);
+  }
+  try{
+    const a=document.createElement('a');
+    a.href=url; a.download=name; a.rel='noopener';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    if(revoke) setTimeout(()=>URL.revokeObjectURL(url),2000);
+    note('Backup created. Choose "Save to Files" to keep a copy.');
+  }catch(e){ note('Backup failed. Use the print button for a paper copy instead.'); }
+}
+function restore(file){
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const d=JSON.parse(r.result);
+      if(!d||typeof d!=='object') throw new Error('bad');
+      state=Object.assign({done:{},weights:{},log:{},start:'',sw:'',gw:''},d);
+      localStorage.setItem(KEY,JSON.stringify(state));
+      try{ location.reload(); }catch(e){}
+      /* if reload does not happen, repaint everything in place */
+      startEl.value=state.start||'';
+      swEl.value=state.sw||'186';
+      gwEl.value=state.gw||'177';
+      ['ht','ag','cb'].forEach(i=>{ if(state[i]) document.getElementById(i).value=state[i]; });
+      render(); refreshLog(); tally();
+      note('Backup restored.');
+    }catch(e){ note('That file could not be read as a backup.'); }
+  };
+  r.readAsText(file);
+}
+function note(t){ document.getElementById('saved').textContent=t; }
+
+/* ---------- build ---------- */
+function dateFor(w,d){
+  if(!state.start) return '';
+  const base=new Date(state.start+'T12:00:00');
+  if(isNaN(base)) return '';
+  base.setDate(base.getDate()+((w-1)*7+d));
+  return base.toLocaleDateString(undefined,{month:'short',day:'numeric'});
+}
+
+function render(){
+  const cal=document.getElementById('cal');
+  cal.innerHTML='';
+
+  BLOCKS.forEach(b=>{
+    const h=document.createElement('div');
+    h.className='block-head';
+    h.innerHTML='<h2>'+b.name+'</h2><em>'+b.note+'</em>';
+    cal.appendChild(h);
+
+    b.weeks.forEach(w=>{
+      const list=WEEKS[w-1];
+      const wk=document.createElement('div');
+      wk.className='week';
+
+      const nRes=list.filter(n=>kind(n)==='res').length;
+      const top=document.createElement('div');
+      top.className='week-top';
+      top.innerHTML='<span class="week-no">Week '+w+'</span>'+
+        '<span class="week-meta">'+nRes+' resistance '+(nRes===1?'day':'days')+'</span>';
+
+      const wt=document.createElement('span');
+      wt.className='wt';
+      wt.innerHTML='<span>Weigh-in</span>';
+      const wi=document.createElement('input');
+      wi.type='number'; wi.step='0.5'; wi.placeholder='lb';
+      wi.value=state.weights['w'+w]||'';
+      wi.addEventListener('change',()=>{
+        if(wi.value==='') delete state.weights['w'+w];
+        else state.weights['w'+w]=wi.value;
+        save(); tally();
+      });
+      wt.appendChild(wi);
+      top.appendChild(wt);
+      wk.appendChild(top);
+
+      const days=document.createElement('div');
+      days.className='days';
+
+      list.forEach((n,i)=>{
+        const k=kind(n);
+        const id='w'+w+'d'+(i+1);
+        const el=document.createElement('div');
+        el.className='day '+k+(state.done[id]?' on':'');
+        el.tabIndex=0;
+        el.setAttribute('role','checkbox');
+        el.setAttribute('aria-checked',state.done[id]?'true':'false');
+        el.setAttribute('aria-label','Week '+w+' '+DOW[i]+', '+n);
+
+        const dt=dateFor(w,i);
+        el.innerHTML='<div class="box">'+(state.done[id]?'&#10003;':'')+'</div>'+
+          '<div class="day-body">'+
+            '<div class="dow">'+DOW[i]+(dt?' · '+dt:'')+'</div>'+
+            '<div class="wname">'+n+'</div>'+
+            '<div class="tag">'+label(k)+(k==='rest'?'':' · 30 min')+'</div>'+
+          '</div>';
+
+        const flip=()=>{
+          if(state.done[id]) delete state.done[id]; else state.done[id]=1;
+          el.classList.toggle('on');
+          el.setAttribute('aria-checked',state.done[id]?'true':'false');
+          el.querySelector('.box').innerHTML=state.done[id]?'&#10003;':'';
+          save(); tally();
+        };
+        el.addEventListener('click',flip);
+        el.addEventListener('keydown',e=>{
+          if(e.key===' '||e.key==='Enter'){e.preventDefault();flip();}
+        });
+        days.appendChild(el);
+      });
+
+      wk.appendChild(days);
+      cal.appendChild(wk);
+    });
+  });
+
+  tally();
+}
+
+function tally(){
+  let done=0,res=0,resTotal=0,lastWeek=0;
+  WEEKS.forEach((list,wi)=>{
+    list.forEach((n,di)=>{
+      const k=kind(n);
+      if(k==='res') resTotal++;
+      if(state.done['w'+(wi+1)+'d'+(di+1)]){
+        done++;
+        if(k==='res') res++;
+        lastWeek=wi+1;
+      }
+    });
+  });
+
+  document.getElementById('c-done').textContent=done;
+  document.getElementById('c-res').textContent=res;
+  document.getElementById('t-res').textContent=resTotal;
+  document.getElementById('t-all').textContent=WEEKS.length*7;
+  document.getElementById('c-week').textContent=lastWeek||'—';
+
+  const goal=+document.getElementById('gw').value;
+  const el=document.getElementById('c-wt');
+  if(goal){
+    const gap=currentWeight()-goal;
+    el.textContent=gap<=0?'0':gap.toFixed(1);
+  } else el.textContent='—';
+
+  macros();
+
+  // density strip
+  const rail=document.getElementById('rail');
+  rail.innerHTML='';
+  WEEKS.forEach((list,wi)=>{
+    list.forEach((n,di)=>{
+      const t=document.createElement('div');
+      t.className='tick lvl'+level(kind(n))+(state.done['w'+(wi+1)+'d'+(di+1)]?' on':'');
+      rail.appendChild(t);
+    });
+    if(wi<12){const g=document.createElement('div');g.className='tick gap';rail.appendChild(g);}
+  });
+}
+
+/* ---------- weight log ---------- */
+let view='d';
+
+function entries(){
+  return Object.keys(state.log||{}).sort()
+    .map(d=>({d:d,t:new Date(d+'T12:00:00').getTime(),v:+state.log[d]}));
+}
+
+function rolling(list,days){
+  return list.map(p=>{
+    const from=p.t-(days-1)*864e5;
+    const win=list.filter(q=>q.t>=from&&q.t<=p.t);
+    return {t:p.t,d:p.d,v:win.reduce((s,q)=>s+q.v,0)/win.length};
+  });
+}
+
+function grouped(list,by){
+  const buckets={};
+  list.forEach(p=>{
+    const dt=new Date(p.t);
+    let k;
+    if(by==='m'){ k=dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0'); }
+    else {
+      const day=(dt.getDay()+6)%7;
+      const mon=new Date(dt); mon.setDate(dt.getDate()-day);
+      k=mon.toISOString().slice(0,10);
+    }
+    (buckets[k]=buckets[k]||[]).push(p);
+  });
+  return Object.keys(buckets).sort().map(k=>{
+    const arr=buckets[k];
+    return {
+      t:arr[0].t, d:k,
+      v:arr.reduce((s,q)=>s+q.v,0)/arr.length
+    };
+  });
+}
+
+function fmtDate(iso){
+  const d=new Date(iso.length===7?iso+'-01T12:00:00':iso+'T12:00:00');
+  return iso.length===7
+    ? d.toLocaleDateString(undefined,{month:'short',year:'2-digit'})
+    : d.toLocaleDateString(undefined,{month:'short',day:'numeric'});
+}
+
+function drawChart(){
+  const raw=entries();
+  const svg=document.getElementById('chart');
+  const wrap=document.querySelector('.chart-wrap');
+  const emp=document.getElementById('empty');
+
+  if(raw.length<1){ wrap.style.display='none'; emp.style.display='block'; svg.innerHTML=''; return; }
+  wrap.style.display='block'; emp.style.display='none';
+
+  const series = view==='d' ? rolling(raw,7)
+               : view==='w' ? grouped(raw,'w')
+               : grouped(raw,'m');
+
+  const W=640,H=260,L=44,R=12,T=14,B=30;
+  const goal=+document.getElementById('gw').value||null;
+
+  let vals=series.map(p=>p.v).concat(raw.map(p=>p.v));
+  if(goal) vals.push(goal);
+  let lo=Math.min.apply(null,vals), hi=Math.max.apply(null,vals);
+  if(hi-lo<4){ const mid=(hi+lo)/2; lo=mid-2; hi=mid+2; }
+  const pad=(hi-lo)*0.12; lo-=pad; hi+=pad;
+
+  const tMin=Math.min.apply(null,raw.map(p=>p.t));
+  const tMax=Math.max.apply(null,raw.map(p=>p.t));
+  const span=Math.max(tMax-tMin,864e5);
+
+  const X=t=>L+((t-tMin)/span)*(W-L-R);
+  const Y=v=>T+(1-(v-lo)/(hi-lo))*(H-T-B);
+
+  let s='';
+
+  // horizontal guides
+  for(let i=0;i<=3;i++){
+    const v=lo+(hi-lo)*(i/3), y=Y(v);
+    s+='<line x1="'+L+'" y1="'+y.toFixed(1)+'" x2="'+(W-R)+'" y2="'+y.toFixed(1)+'" stroke="#e6e9ec" stroke-width="1"/>';
+    s+='<text x="'+(L-7)+'" y="'+(y+4).toFixed(1)+'" text-anchor="end" font-size="11" fill="#8a939d" font-family="Barlow, sans-serif">'+v.toFixed(0)+'</text>';
+  }
+
+  // goal line
+  if(goal&&goal>=lo&&goal<=hi){
+    const gy=Y(goal);
+    s+='<line x1="'+L+'" y1="'+gy.toFixed(1)+'" x2="'+(W-R)+'" y2="'+gy.toFixed(1)+'" stroke="#0f6b46" stroke-width="1.5" stroke-dasharray="5 4"/>';
+    s+='<text x="'+(W-R)+'" y="'+(gy-6).toFixed(1)+'" text-anchor="end" font-size="11" fill="#0f6b46" font-family="Barlow, sans-serif">goal '+goal+'</text>';
+  }
+
+  // raw readings behind the trend, daily view only
+  if(view==='d'){
+    raw.forEach(p=>{
+      s+='<circle cx="'+X(p.t).toFixed(1)+'" cy="'+Y(p.v).toFixed(1)+'" r="2.6" fill="#c3cad1"/>';
+    });
+  }
+
+  // trend line
+  if(series.length>1){
+    const pts=series.map(p=>X(p.t).toFixed(1)+','+Y(p.v).toFixed(1)).join(' ');
+    s+='<polyline points="'+pts+'" fill="none" stroke="#16191d" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>';
+  }
+  series.forEach(p=>{
+    s+='<circle cx="'+X(p.t).toFixed(1)+'" cy="'+Y(p.v).toFixed(1)+'" r="3.2" fill="#16191d"/>';
+  });
+
+  // x labels
+  const ends=series.length?[series[0],series[series.length-1]]:[];
+  ends.forEach((p,i)=>{
+    s+='<text x="'+X(p.t).toFixed(1)+'" y="'+(H-9)+'" text-anchor="'+(i?'end':'start')+
+       '" font-size="11" fill="#8a939d" font-family="Barlow, sans-serif">'+fmtDate(p.d)+'</text>';
+  });
+
+  svg.innerHTML=s;
+}
+
+function smoothed(){
+  const raw=entries();
+  if(!raw.length) return null;
+  const r=rolling(raw,7);
+  return r[r.length-1].v;
+}
+
+function logStats(){
+  const raw=entries();
+  const goal=+document.getElementById('gw').value||null;
+  const set=(id,v)=>document.getElementById(id).textContent=v;
+
+  if(!raw.length){ ['s-now','s-rate','s-total','s-eta'].forEach(i=>set(i,'—')); return; }
+
+  const avg=smoothed();
+  set('s-now',avg.toFixed(1));
+
+  const start=+document.getElementById('sw').value||raw[0].v;
+  const total=avg-start;
+  set('s-total',(total>0?'+':'')+total.toFixed(1));
+
+  // rate from the last 21 days of smoothed data
+  const r=rolling(raw,7);
+  const last=r[r.length-1];
+  const from=last.t-21*864e5;
+  const win=r.filter(p=>p.t>=from);
+  let rate=null;
+  if(win.length>1){
+    const wks=(last.t-win[0].t)/(7*864e5);
+    if(wks>=0.5) rate=(last.v-win[0].v)/wks;
+  }
+  set('s-rate',rate===null?'—':(rate>0?'+':'')+rate.toFixed(2));
+
+  if(rate!==null&&rate<-0.05&&goal){
+    const wks=(avg-goal)/-rate;
+    set('s-eta',wks<=0?'0':Math.round(wks));
+  } else set('s-eta',goal&&avg<=goal?'0':'—');
+}
+
+function drawEntries(){
+  const box=document.getElementById('entries');
+  box.innerHTML='';
+  entries().slice(-14).reverse().forEach(p=>{
+    const e=document.createElement('div');
+    e.className='ent';
+    e.title='Tap to remove';
+    e.innerHTML='<b>'+p.v.toFixed(1)+'</b><span>'+fmtDate(p.d)+'</span>';
+    e.addEventListener('click',()=>{
+      delete state.log[p.d];
+      save(); refreshLog(); tally();
+    });
+    box.appendChild(e);
+  });
+}
+
+function refreshLog(){ drawChart(); logStats(); drawEntries(); }
+
+document.getElementById('ladd').addEventListener('click',()=>{
+  const d=document.getElementById('ld').value;
+  const w=parseFloat(document.getElementById('lw').value);
+  if(!d||!w||w<50||w>600){ note('Enter a date and a weight between 50 and 600 lb.'); return; }
+  state.log=state.log||{};
+  state.log[d]=w;
+  document.getElementById('lw').value='';
+  save(); refreshLog(); tally();
+  note('Logged '+w+' lb for '+fmtDate(d)+'.');
+});
+
+document.querySelectorAll('.vbtn').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.vbtn').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    view=b.dataset.v;
+    drawChart();
+  });
+});
+
+/* ---------- macros ---------- */
+function currentWeight(){
+  const sm=smoothed();
+  if(sm!==null) return sm;
+  const ws=Object.keys(state.weights).map(k=>+k.slice(1)).sort((a,b)=>a-b);
+  if(ws.length) return +state.weights['w'+ws[ws.length-1]];
+  if(state.sw) return +state.sw;
+  return 186;
+}
+
+function macros(){
+  const lb=currentWeight();
+  const kg=lb/2.20462;
+  const inches=+document.getElementById('ht').value||70;
+  const age=+document.getElementById('ag').value||42;
+  const cm=inches*2.54;
+
+  const bmr=10*kg+6.25*cm-5*age+5;
+  const tdee=bmr*1.55;
+  const target=Math.round((tdee-450)/10)*10;
+
+  const pro=Math.round(kg*2.1);
+  let carb=+document.getElementById('cb').value||125;
+  let fat=Math.round((target-pro*4-carb*4)/9);
+
+  const fatFloor=Math.round(kg*0.8);
+  if(fat<fatFloor){
+    fat=fatFloor;
+    carb=Math.max(0,Math.round((target-pro*4-fat*9)/4));
+  }
+
+  document.getElementById('m-cal').textContent=target.toLocaleString();
+  document.getElementById('m-pro').textContent=pro;
+  document.getElementById('m-carb').textContent=carb;
+  document.getElementById('m-fat').textContent=fat;
+
+  document.getElementById('m-math').textContent=
+    'At '+lb+' lb: resting burn about '+Math.round(bmr).toLocaleString()+
+    ' calories, roughly '+Math.round(tdee).toLocaleString()+
+    ' with six training days, minus a 450-calorie deficit. Protein at 2.1 g per kg, carbs capped, fat takes the remainder.';
+}
+
+['ht','ag','cb'].forEach(id=>{
+  const el=document.getElementById(id);
+  el.addEventListener('input',()=>{state[id]=el.value;save();macros();});
+});
+
+/* ---------- wire up ---------- */
+document.getElementById('print').addEventListener('click',()=>window.print());
+
+document.getElementById('reset').addEventListener('click',()=>{
+  state.done={};
+  render(); save();
+  note('Check marks cleared. Weigh-ins kept.');
+});
+
+const startEl=document.getElementById('start');
+startEl.addEventListener('change',()=>{state.start=startEl.value;save();render();});
+
+const swEl=document.getElementById('sw');
+swEl.addEventListener('change',()=>{state.sw=swEl.value;save();tally();});
+
+const gwEl=document.getElementById('gw');
+gwEl.addEventListener('change',()=>{state.gw=gwEl.value;save();refreshLog();tally();});
+
+document.getElementById('backup').addEventListener('click',backup);
+document.getElementById('restorebtn').addEventListener('click',()=>document.getElementById('restorefile').click());
+document.getElementById('restorefile').addEventListener('change',e=>{ if(e.target.files[0]) restore(e.target.files[0]); });
+
+(()=>{
+  load();
+  startEl.value=state.start||'';
+  swEl.value=state.sw||'186';
+  gwEl.value=state.gw||'177';
+  ['ht','ag','cb'].forEach(id=>{ if(state[id]) document.getElementById(id).value=state[id]; });
+  state.log=state.log||{};
+  document.getElementById('ld').value=new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
+  refreshLog();
+  render();
+})();
+</script>
