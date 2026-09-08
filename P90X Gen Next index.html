@@ -1,0 +1,1129 @@
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>P90X Gen Next — 90-day log</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap');
+  :root{
+    --ink:#16191d;
+    --steel:#5c656f;
+    --hair:#d5d9de;
+    --green:#0f6b46;
+    --amber:#8a5a00;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;padding:22px 16px 60px;
+    font-family:'Barlow',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    color:var(--ink);background:#fff;
+    max-width:760px;margin-left:auto;margin-right:auto;
+    -webkit-text-size-adjust:100%;
+  }
+  h1,h2,h3{font-family:'Barlow Condensed','Barlow',-apple-system,'Helvetica Neue',sans-serif;margin:0}
+
+  .mast{border-bottom:3px solid var(--ink);padding-bottom:14px;margin-bottom:20px}
+  .mast h1{font-size:40px;font-weight:700;letter-spacing:-.01em;line-height:.95}
+  .mast h1 b{font-weight:500;color:var(--steel)}
+  .mast p{margin:8px 0 0;font-size:14px;color:var(--steel);line-height:1.45;max-width:56ch}
+
+  .rail{display:flex;height:26px;border-bottom:2px solid var(--ink);margin:16px 0 4px}
+  .tick{flex:1 1 0;background:#eef0f2;margin-right:1px}
+  .tick.on{background:var(--green)}
+  .tick.gap{flex:0 0 5px;background:none !important;border-left:1px dotted var(--hair)}
+  .rail-note{font-size:11px;color:var(--steel);margin:0 0 22px;letter-spacing:.02em}
+
+  .counts{display:flex;margin:18px 0 24px;border:1px solid var(--hair);flex-wrap:wrap}
+  .counts div{flex:1 1 25%;padding:12px 10px;border-right:1px solid var(--hair)}
+  .counts div:last-child{border-right:0}
+  .counts strong{display:block;font-family:'Barlow Condensed','Barlow',sans-serif;font-size:27px;font-weight:700;line-height:1}
+  .counts span{display:block;font-size:11.5px;color:var(--steel);margin-top:4px;line-height:1.25}
+
+  .setup{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-bottom:8px}
+  .setup label{font-size:12px;color:var(--steel);display:block;margin-bottom:4px}
+  .setup input{
+    font-family:inherit;font-size:15px;padding:7px 9px;
+    border:1px solid var(--hair);border-radius:3px;background:#fff;color:var(--ink);
+  }
+  .btn{
+    font-family:inherit;font-size:13px;padding:8px 13px;
+    background:#fff;border:1px solid var(--hair);border-radius:3px;
+    color:var(--steel);cursor:pointer;
+  }
+  .btn:hover,.btn:focus-visible{border-color:var(--ink);color:var(--ink)}
+
+  .block-head{
+    display:flex;justify-content:space-between;align-items:baseline;
+    margin:34px 0 4px;padding-bottom:5px;border-bottom:2px solid var(--ink);
+  }
+  .block-head h2{font-size:21px;font-weight:600;letter-spacing:.01em}
+  .block-head em{font-style:normal;font-size:13px;color:var(--steel)}
+
+  .phase{
+    display:flex;align-items:baseline;gap:10px;
+    margin:30px 0 0;padding:9px 0 6px;border-bottom:2px solid var(--ink);
+  }
+  .phase h3{font-family:'Barlow Condensed','Barlow',sans-serif;font-size:19px;font-weight:700;letter-spacing:.02em}
+  .phase em{font-style:normal;font-size:12.5px;color:var(--steel)}
+  .startnote{font-size:12px;color:var(--amber);margin:2px 0 0;flex-basis:100%}
+  .week{border-bottom:1px solid var(--hair);padding:14px 0}
+  .week-head{display:flex;align-items:baseline;gap:10px;margin-bottom:9px}
+  .week-head h3{font-family:'Barlow Condensed','Barlow',sans-serif;font-size:17px;font-weight:700}
+  .week-meta{font-size:12px;color:var(--steel);flex:1}
+  .week.recovery .week-head h3{color:var(--amber)}
+
+  .days{display:grid;gap:6px}
+  .day{
+    padding:9px 10px;border:1px solid var(--hair);border-radius:3px;background:#fff;
+  }
+  .day.done{background:#f2f8f5;border-color:#bcd9cb}
+  .day-top{display:flex;align-items:center;gap:9px}
+  .box{
+    flex:0 0 auto;width:20px;height:20px;border:2px solid var(--hair);border-radius:3px;
+    background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;
+    padding:0;color:transparent;font-size:13px;line-height:1;
+  }
+  .box:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+  .day.done .box{background:var(--green);border-color:var(--green);color:#fff}
+  .dnum{
+    flex:0 0 68px;font-size:10.5px;color:var(--steel);letter-spacing:.04em;line-height:1.15;
+  }
+  .pick{
+    flex:1 1 auto;min-width:0;font-family:inherit;font-size:14px;padding:5px 6px;
+    border:1px solid var(--hair);border-radius:3px;background:#fff;color:var(--ink);
+  }
+  .day.strength .pick{font-weight:600}
+  .day-sub{display:flex;gap:6px;margin-top:6px;padding-left:29px}
+  .five{
+    flex:0 0 auto;max-width:44%;font-family:inherit;font-size:12px;padding:4px 5px;
+    border:1px solid var(--hair);border-radius:3px;background:#fff;color:var(--steel);
+  }
+  .lifts{
+    flex:1 1 auto;min-width:0;font-family:inherit;font-size:12.5px;padding:4px 6px;
+    border:1px solid var(--hair);border-radius:3px;color:var(--ink);background:#fff;
+  }
+  .lifts::placeholder{color:#a8b0b8}
+
+  .pill{
+    flex:0 0 auto;font-size:9.5px;letter-spacing:.06em;color:var(--steel);
+    border:1px solid var(--hair);border-radius:2px;padding:2px 4px;line-height:1;
+  }
+  .day.strength .pill{border-color:#b9c4cc;color:#3b444d}
+
+  .meas{margin-top:40px;border-top:3px solid var(--ink);padding-top:18px}
+  .mtable{width:100%;border-collapse:collapse;margin-top:12px}
+  .mtable th{
+    font-family:'Barlow Condensed','Barlow',sans-serif;font-size:13px;font-weight:600;
+    color:var(--steel);text-align:right;padding:6px 6px;border-bottom:1px solid var(--hair);
+  }
+  .mtable th:first-child{text-align:left}
+  .mtable td{padding:4px 6px;border-bottom:1px solid #eef0f2;font-size:14px}
+  .mtable td:first-child{color:var(--steel);font-size:13px}
+  .mtable input{
+    width:100%;max-width:82px;font-family:inherit;font-size:15px;padding:5px 6px;
+    border:1px solid var(--hair);border-radius:3px;text-align:right;color:var(--ink);background:#fff;
+  }
+  .mtable tr.total td{font-weight:600;color:var(--ink);border-bottom:2px solid var(--ink)}
+  .mtable tr.total td.n{font-family:'Barlow Condensed','Barlow',sans-serif;font-size:19px;text-align:right;padding-right:12px}
+  .whr{font-size:13px;color:var(--steel);margin-top:12px;line-height:1.5}
+  .whr b{color:var(--ink);font-weight:600}
+
+  .log{margin-top:40px;border-top:3px solid var(--ink);padding-top:18px}
+  .log-add{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin:12px 0 18px}
+  .log-add label{font-size:12px;color:var(--steel);display:block;margin-bottom:4px}
+  .log-add input{
+    font-family:inherit;font-size:16px;padding:8px 9px;
+    border:1px solid var(--hair);border-radius:3px;color:var(--ink);background:#fff;
+  }
+  .stats{display:flex;flex-wrap:wrap;border:1px solid var(--hair);margin-bottom:16px}
+  .stats div{flex:1 1 25%;padding:11px 10px;border-right:1px solid var(--hair)}
+  .stats div:last-child{border-right:0}
+  .stats strong{display:block;font-family:'Barlow Condensed','Barlow',sans-serif;font-size:24px;font-weight:700;line-height:1}
+  .stats span{display:block;font-size:11px;color:var(--steel);margin-top:4px}
+  .toggle{display:flex;gap:6px;margin-bottom:10px}
+  .toggle button{
+    font-family:inherit;font-size:12px;padding:5px 11px;background:#fff;
+    border:1px solid var(--hair);border-radius:3px;color:var(--steel);cursor:pointer;
+  }
+  .toggle button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+  svg{display:block;width:100%;height:auto;border:1px solid var(--hair);border-radius:3px}
+  .entries{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px}
+  .ent{
+    font-size:11.5px;color:var(--steel);border:1px solid var(--hair);border-radius:3px;
+    padding:3px 7px;cursor:pointer;background:#fff;font-family:inherit;
+  }
+  .ent:hover{border-color:#b04a3a;color:#b04a3a}
+  .empty{font-size:13px;color:var(--steel);padding:16px 0;font-style:italic}
+
+  .prog{margin-top:40px;border-top:3px solid var(--ink);padding-top:18px}
+  .prog-rows{margin-top:12px}
+  .prow{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--hair);font-size:13px}
+  .prow b{flex:0 0 92px;font-weight:600;color:var(--steel);font-size:12px}
+  .prow span{flex:1 1 auto;min-width:0}
+
+  .fuel{margin-top:40px;border-top:3px solid var(--ink);padding-top:18px}
+  .fuel-in{display:flex;flex-wrap:wrap;gap:12px;margin:12px 0 16px}
+  .fuel-in label{font-size:12px;color:var(--steel);display:block;margin-bottom:4px}
+  .fuel-in input{
+    width:88px;font-family:inherit;font-size:15px;padding:7px 9px;
+    border:1px solid var(--hair);border-radius:3px;color:var(--ink);background:#fff;
+  }
+  .macros{display:flex;flex-wrap:wrap;border:1px solid var(--hair)}
+  .macros div{flex:1 1 25%;padding:12px 10px;border-right:1px solid var(--hair)}
+  .macros div:last-child{border-right:0}
+  .macros strong{display:block;font-family:'Barlow Condensed','Barlow',sans-serif;font-size:26px;font-weight:700;line-height:1}
+  .macros span{display:block;font-size:11.5px;color:var(--steel);margin-top:4px}
+  .math{font-size:12px;color:var(--steel);margin-top:10px;line-height:1.5}
+
+  .rules{margin-top:40px;border-top:3px solid var(--ink);padding-top:18px}
+  .rules li{font-size:13.5px;line-height:1.55;margin-bottom:9px;color:var(--ink)}
+  .rules li b{font-weight:600}
+  .saved{font-size:11.5px;color:var(--steel);margin-top:26px;text-align:right}
+
+  @media print{
+    .btn,.toggle,.log-add,.setup .btn{display:none}
+    body{padding:0;max-width:none}
+    .week{break-inside:avoid}
+  }
+</style>
+
+<div class="mast">
+  <h1>P90X Gen Next <b>/ 90-day log</b></h1>
+  <p>Ninety days, straight off the official BODi calendar. Five training days and two active recovery days a week. Log the dumbbells you actually used — in this program the weight in your hand is the progression.</p>
+</div>
+
+<div class="rail" id="rail"></div>
+<p class="rail-note">One tick per day. Filled means done.</p>
+
+<div class="counts">
+  <div><strong id="c-done">0</strong><span>days done of 90</span></div>
+  <div><strong id="c-res">0</strong><span>strength days</span></div>
+  <div><strong id="c-week">—</strong><span>current week</span></div>
+  <div><strong id="c-wt">—</strong><span>lb to goal</span></div>
+</div>
+
+<div class="setup">
+  <div><label for="start">Day 1 date</label><input type="date" id="start"></div>
+  <div><label for="sw">Start weight</label><input type="number" id="sw" step="0.1" value="186" style="width:92px"></div>
+  <div><label for="gw">Goal weight</label><input type="number" id="gw" step="0.1" value="177" style="width:92px"></div>
+  <button class="btn" id="backup">Back up</button>
+  <button class="btn" id="restorebtn">Restore</button>
+  <button class="btn" id="print">Print</button>
+  <button class="btn" id="reset">Reset</button>
+  <input type="file" id="restorefile" accept="application/json,.json" style="display:none">
+  <p class="startnote" id="startnote"></p>
+</div>
+
+<div class="block-head">
+  <h2>The calendar</h2>
+  <em>Week 1 is filled in — set the rest from BODi</em>
+</div>
+<div id="cal"></div>
+
+<div class="prog">
+  <div class="block-head" style="margin-top:0;border-bottom:0;padding-bottom:0">
+    <h2>Lift history</h2>
+    <em>every time you did it</em>
+  </div>
+  <div class="setup" style="margin-top:12px">
+    <div><label for="pw">Workout</label><select class="pick" id="pw" style="min-width:200px"></select></div>
+  </div>
+  <div class="prog-rows" id="prog-rows"></div>
+</div>
+
+<div class="log">
+  <div class="block-head" style="margin-top:0;border-bottom:0;padding-bottom:0">
+    <h2>Weight</h2>
+    <em>log as often as you like</em>
+  </div>
+  <div class="log-add">
+    <div><label for="ld">Date</label><input type="date" id="ld"></div>
+    <div><label for="lw">Weight</label><input type="number" id="lw" step="0.1" placeholder="185.4" style="width:110px"></div>
+    <button class="btn" id="ladd">Log it</button>
+  </div>
+  <div class="stats">
+    <div><strong id="s-now">—</strong><span>7-day average</span></div>
+    <div><strong id="s-rate">—</strong><span>lb per week</span></div>
+    <div><strong id="s-total">—</strong><span>lb since day 1</span></div>
+    <div><strong id="s-eta">—</strong><span>goal by</span></div>
+  </div>
+  <div class="toggle">
+    <button id="t-d" aria-pressed="true">Daily</button>
+    <button id="t-w" aria-pressed="false">Weekly</button>
+    <button id="t-m" aria-pressed="false">Monthly</button>
+  </div>
+  <svg id="chart" viewBox="0 0 640 260" preserveAspectRatio="xMidYMid meet"></svg>
+  <div class="entries" id="entries"></div>
+  <div class="empty" id="empty">No weights logged yet.</div>
+</div>
+
+<div class="meas">
+  <div class="block-head" style="margin-top:0;border-bottom:0;padding-bottom:0">
+    <h2>Measurements</h2>
+    <em>inches, taken three times</em>
+  </div>
+  <table class="mtable">
+    <thead>
+      <tr><th>Site</th><th>Day 1</th><th>Day 45</th><th>Day 90</th><th>Change</th></tr>
+    </thead>
+    <tbody id="mbody"></tbody>
+  </table>
+  <p class="whr" id="whr"></p>
+</div>
+
+<div class="fuel">
+  <div class="block-head" style="margin-top:0;border-bottom:0;padding-bottom:0">
+    <h2>Fuel</h2>
+    <em>recalculates as you drop</em>
+  </div>
+  <div class="fuel-in">
+    <div><label for="ht">Height (in)</label><input type="number" id="ht" value="70"></div>
+    <div><label for="ag">Age</label><input type="number" id="ag" value="42"></div>
+    <div><label for="cb">Carb cap (g)</label><input type="number" id="cb" value="125"></div>
+  </div>
+  <div class="macros">
+    <div><strong id="m-cal">—</strong><span>calories</span></div>
+    <div><strong id="m-pro">—</strong><span>g protein</span></div>
+    <div><strong id="m-carb">—</strong><span>g carbs</span></div>
+    <div><strong id="m-fat">—</strong><span>g fat</span></div>
+  </div>
+  <p class="math" id="m-math"></p>
+</div>
+
+<div class="rules">
+  <div class="block-head" style="margin-top:0;border-bottom:0;padding-bottom:0">
+    <h2>Rules</h2>
+    <em>why it's built this way</em>
+  </div>
+  <ul>
+    <li><b>Modify every jump you're not certain of.</b> The bench box jumps and Bulgarian plyo come late in workouts when you're already fatigued. A missed landing at 42 costs months. Modifiers exist for every move.</li>
+    <li><b>Keep the deficit under 500.</b> A 2025 network meta-analysis found lean mass preservation falls off past that. Yours is 450.</li>
+    <li><b>Protein does the protecting.</b> An AJCN trial found roughly 2.4 g/kg beat 1.2 g/kg for fat loss while holding lean mass in a deficit. You're at 2.1.</li>
+    <li><b>Stack 5er Abs on strength days.</b> Dedicated core work is thin in this program outside Core Circuit, which only appears in recovery weeks.</li>
+    <li><b>Short rest means lighter weight.</b> That's the design, not your failure. Fifteen seconds between moves caps what you can load. Chase the reps at pace, not a personal record.</li>
+    <li><b>Measure your waist, not just your weight.</b> BMI would call you overweight and it cannot tell muscle from fat. Waist-to-height ratio can. If the scale stalls but the waist keeps dropping, the program is working.</li>
+    <li><b>Reassess at week 3.</b> If you're not down about a pound a week, cut 150 calories. No more than that.</li>
+  </ul>
+</div>
+
+<p class="saved" id="saved">Saved on this device</p>
+
+<script>
+(function(){
+  "use strict";
+
+  var KEY='p90xgn-v1';
+
+  var STRENGTH=['Push Strength','Pull Strength','Upper Body','Lower Body','Full Body Strength','Full Body Power','Core Circuit'];
+  var ATHLETIC=['Plyometrix','Speed and Agility','Accel/Decel','Cardio Boxing'];
+  var RECOVERY=['Active Mobility','Active Flexibility','Myofascial Release'];
+  var FIVERS=['5er Abs','5er Shoulders','5er Classic Push Pull','5er Glutes','5er Arms'];
+  var ALL=['Rest'].concat(STRENGTH,ATHLETIC,RECOVERY);
+
+  // Transcribed from the official BODi P90X Generation Next calendar, all three phases.
+  var SCHEDULE=[
+    'Push Strength','Plyometrix','Upper Body','Active Mobility','Lower Body','Cardio Boxing','Myofascial Release',
+    'Pull Strength','Cardio Boxing','Lower Body','Active Mobility','Upper Body','Plyometrix','Myofascial Release',
+    'Push Strength','Plyometrix','Upper Body','Active Mobility','Lower Body','Cardio Boxing','Myofascial Release',
+    'Speed and Agility','Active Mobility','Core Circuit','Active Flexibility','Cardio Boxing','Core Circuit','Myofascial Release',
+    'Full Body Strength','Accel/Decel','Pull Strength','Active Flexibility','Full Body Power','Speed and Agility','Myofascial Release',
+    'Full Body Power','Speed and Agility','Push Strength','Active Flexibility','Full Body Strength','Accel/Decel','Myofascial Release',
+    'Full Body Strength','Accel/Decel','Pull Strength','Active Flexibility','Full Body Power','Speed and Agility','Myofascial Release',
+    'Active Flexibility','Core Circuit','Cardio Boxing','Active Mobility','Core Circuit','Speed and Agility','Myofascial Release',
+    'Upper Body','Plyometrix','Push Strength','Active Flexibility','Lower Body','Cardio Boxing','Myofascial Release',
+    'Full Body Strength','Accel/Decel','Pull Strength','Active Mobility','Full Body Power','Speed and Agility','Myofascial Release',
+    'Lower Body','Cardio Boxing','Pull Strength','Active Flexibility','Upper Body','Plyometrix','Myofascial Release',
+    'Full Body Power','Speed and Agility','Push Strength','Active Mobility','Full Body Strength','Accel/Decel','Myofascial Release',
+    'Active Flexibility','Core Circuit','Cardio Boxing','Active Mobility','Core Circuit','Speed and Agility'
+  ];
+  var TOTAL=SCHEDULE.length;              // 90 — week 13 has no Sunday
+  var RECOVERY_WEEKS=[4,8,13];
+  var PHASE_START={1:1,5:2,9:3};
+
+  var state={start:'',sw:186,gw:177,ht:70,ag:42,cb:125,days:{},weights:[],meas:{a:{},b:{},c:{}}};
+  var view='d';
+  var saveTimer=null;
+
+  function $(id){return document.getElementById(id)}
+
+  function load(){
+    try{
+      var raw=localStorage.getItem(KEY);
+      if(raw){
+        var p=JSON.parse(raw);
+        if(p&&typeof p==='object'){
+          state.start=p.start||'';
+          state.sw=num(p.sw,186); state.gw=num(p.gw,177);
+          state.ht=num(p.ht,70); state.ag=num(p.ag,42); state.cb=num(p.cb,125);
+          state.days=(p.days&&typeof p.days==='object')?p.days:{};
+          state.weights=Array.isArray(p.weights)?p.weights:[];
+          state.meas=(p.meas&&typeof p.meas==='object')?p.meas:{a:{},b:{},c:{}};
+          ['a','b','c'].forEach(function(c){if(!state.meas[c])state.meas[c]={}});
+        }
+      }
+    }catch(e){
+      $('saved').textContent='This browser is blocking storage. Private mode will not remember anything.';
+    }
+    if(!Object.keys(state.days).length) seedAll();
+  }
+
+  function seedAll(){
+    for(var i=0;i<TOTAL;i++){
+      state.days[String(i+1)]={w:SCHEDULE[i],done:false,five:'',lifts:''};
+    }
+  }
+
+  function num(v,d){var n=parseFloat(v);return isFinite(n)?n:d}
+
+  function save(){
+    clearTimeout(saveTimer);
+    saveTimer=setTimeout(function(){
+      try{
+        localStorage.setItem(KEY,JSON.stringify(state));
+        $('saved').textContent='Saved on this device';
+      }catch(e){
+        $('saved').textContent='Could not save. Storage may be full or blocked.';
+      }
+    },250);
+  }
+
+  function day(n){
+    var k=String(n);
+    if(!state.days[k]) state.days[k]={w:'',done:false,five:'',lifts:''};
+    return state.days[k];
+  }
+
+  function pillar(w){
+    if(STRENGTH.indexOf(w)>=0) return 'MOT';
+    if(ATHLETIC.indexOf(w)>=0) return 'NPT';
+    if(RECOVERY.indexOf(w)>=0) return 'ART';
+    return '';
+  }
+
+  function kind(w){
+    if(STRENGTH.indexOf(w)>=0) return 'strength';
+    if(ATHLETIC.indexOf(w)>=0) return 'athletic';
+    if(RECOVERY.indexOf(w)>=0) return 'recovery';
+    return '';
+  }
+
+  function dateFor(n){
+    if(!state.start) return null;
+    var p=state.start.split('-');
+    if(p.length!==3) return null;
+    var d=new Date(+p[0],+p[1]-1,+p[2]);
+    if(isNaN(d.getTime())) return null;
+    d.setDate(d.getDate()+(n-1));
+    return d;
+  }
+
+  function fmt(d){
+    if(!d) return '';
+    return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]+' '+d.getDate();
+  }
+
+  function iso(d){
+    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  }
+
+  /* ---------- calendar ---------- */
+
+  function daysInWeek(w){
+    return Math.min(7,TOTAL-(w-1)*7);
+  }
+
+  function buildCal(){
+    var cal=$('cal');
+    cal.textContent='';
+    for(var w=1;w<=13;w++){
+      if(PHASE_START[w]){
+        var ph=document.createElement('div');
+        ph.className='phase';
+        var pn=document.createElement('h3');
+        pn.textContent='Phase '+PHASE_START[w];
+        var pd=document.createElement('em');
+        pd.textContent=w===1?'body-part split':(w===5?'full body, strength and power':'both, alternating');
+        ph.appendChild(pn); ph.appendChild(pd);
+        cal.appendChild(ph);
+      }
+      cal.appendChild(buildWeek(w));
+    }
+  }
+
+  function buildWeek(w){
+    var isRec=RECOVERY_WEEKS.indexOf(w)>=0;
+    var sec=document.createElement('div');
+    sec.className='week'+(isRec?' recovery':'');
+
+    var head=document.createElement('div');
+    head.className='week-head';
+    var h=document.createElement('h3');
+    h.textContent='Week '+w;
+    var meta=document.createElement('div');
+    meta.className='week-meta';
+    meta.id='wm-'+w;
+    head.appendChild(h); head.appendChild(meta);
+    sec.appendChild(head);
+
+    var days=document.createElement('div');
+    days.className='days';
+    var count=daysInWeek(w);
+    for(var i=0;i<count;i++){
+      days.appendChild(buildDay((w-1)*7+i+1));
+    }
+    sec.appendChild(days);
+    return sec;
+  }
+
+  function buildDay(n){
+    var d=day(n);
+    var wrap=document.createElement('div');
+    wrap.className='day';
+    wrap.id='day-'+n;
+
+    var top=document.createElement('div');
+    top.className='day-top';
+
+    var box=document.createElement('button');
+    box.className='box';
+    box.type='button';
+    box.setAttribute('role','checkbox');
+    box.setAttribute('aria-checked',d.done?'true':'false');
+    box.setAttribute('aria-label','Day '+n+' complete');
+    box.textContent='\u2713';
+    box.addEventListener('click',function(){
+      var cur=day(n);
+      cur.done=!cur.done;
+      save(); paintDay(n); paintRail(); paintCounts();
+    });
+
+    var lab=document.createElement('div');
+    lab.className='dnum';
+    lab.id='dn-'+n;
+
+    var pick=document.createElement('select');
+    pick.className='pick';
+    pick.setAttribute('aria-label','Workout for day '+n);
+    ALL.forEach(function(w){
+      var o=document.createElement('option');
+      o.value=w; o.textContent=w||'—';
+      pick.appendChild(o);
+    });
+    var blank=document.createElement('option');
+    blank.value=''; blank.textContent='Not set yet';
+    pick.insertBefore(blank,pick.firstChild);
+    pick.value=d.w||'';
+    pick.addEventListener('change',function(){
+      day(n).w=pick.value;
+      save(); paintDay(n); paintCounts(); paintProg();
+    });
+
+    var tag=document.createElement('span');
+    tag.className='pill';
+    tag.id='pl-'+n;
+
+    top.appendChild(box); top.appendChild(lab); top.appendChild(pick); top.appendChild(tag);
+    wrap.appendChild(top);
+
+    var sub=document.createElement('div');
+    sub.className='day-sub';
+
+    var five=document.createElement('select');
+    five.className='five';
+    five.setAttribute('aria-label','Bonus 5er for day '+n);
+    var none=document.createElement('option');
+    none.value=''; none.textContent='No 5er';
+    five.appendChild(none);
+    FIVERS.forEach(function(f){
+      var o=document.createElement('option');
+      o.value=f; o.textContent=f;
+      five.appendChild(o);
+    });
+    five.value=d.five||'';
+    five.addEventListener('change',function(){
+      day(n).five=five.value; save();
+    });
+
+    var lifts=document.createElement('input');
+    lifts.className='lifts';
+    lifts.type='text';
+    lifts.placeholder='weights used';
+    lifts.value=d.lifts||'';
+    lifts.setAttribute('aria-label','Weights used on day '+n);
+    lifts.addEventListener('input',function(){
+      day(n).lifts=lifts.value; save();
+    });
+    lifts.addEventListener('change',paintProg);
+
+    sub.appendChild(five); sub.appendChild(lifts);
+    wrap.appendChild(sub);
+    return wrap;
+  }
+
+  function paintDay(n){
+    var d=day(n), el=$('day-'+n);
+    if(!el) return;
+    var k=kind(d.w);
+    el.className='day'+(d.done?' done':'')+(k==='strength'?' strength':'');
+    var box=el.querySelector('.box');
+    if(box) box.setAttribute('aria-checked',d.done?'true':'false');
+    var tg=$('pl-'+n);
+    if(tg){
+      var pl=pillar(d.w);
+      tg.textContent=pl;
+      tg.style.display=pl?'':'none';
+      tg.title=pl==='MOT'?'Metabolic Overload Training':(pl==='NPT'?'Neuro-Performance Training':(pl==='ART'?'Active Recovery Training':''));
+    }
+    var lab=$('dn-'+n);
+    if(lab){
+      var dt=dateFor(n);
+      lab.textContent=dt?(['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][dt.getDay()]+' '+fmt(dt)):('Day '+n);
+    }
+  }
+
+  function paintStartNote(){
+    var el=$('startnote');
+    if(!el) return;
+    var d=dateFor(1);
+    if(!d){el.textContent='';return}
+    if(d.getDay()===1){el.textContent='';return}
+    el.textContent='The official calendar runs Monday to Sunday. Day 1 is a '+
+      ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][d.getDay()]+
+      ', so your rest days will not fall on weekends. That is fine \u2014 just so you know.';
+  }
+
+  function paintCal(){
+    for(var n=1;n<=TOTAL;n++) paintDay(n);
+    for(var w=1;w<=13;w++){
+      var m=$('wm-'+w);
+      if(!m) continue;
+      var done=0,set=0,count=daysInWeek(w);
+      for(var i=0;i<count;i++){
+        var d=day((w-1)*7+i+1);
+        if(d.done) done++;
+        if(d.w) set++;
+      }
+      var bits=[done+' of '+count+' done'];
+      if(set<count) bits.push((count-set)+' not set');
+      if(RECOVERY_WEEKS.indexOf(w)>=0) bits.push('recovery week');
+      m.textContent=bits.join(' \u00b7 ');
+    }
+  }
+
+  /* ---------- rail and counts ---------- */
+
+  function paintRail(){
+    var rail=$('rail');
+    rail.textContent='';
+    for(var n=1;n<=TOTAL;n++){
+      var t=document.createElement('div');
+      t.className='tick'+(day(n).done?' on':'');
+      rail.appendChild(t);
+      if(n%7===0&&n<TOTAL){
+        var g=document.createElement('div');
+        g.className='tick gap';
+        rail.appendChild(g);
+      }
+    }
+  }
+
+  function paintCounts(){
+    var done=0,res=0,lastDone=0;
+    for(var n=1;n<=TOTAL;n++){
+      var d=day(n);
+      if(d.done){done++;lastDone=n;}
+      if(kind(d.w)==='strength') res++;
+    }
+    $('c-done').textContent=done;
+    $('c-res').textContent=res;
+    $('c-week').textContent=lastDone?('W'+Math.ceil(lastDone/7)):'—';
+    var cw=currentWeight();
+    var togo=cw-state.gw;
+    $('c-wt').textContent=(togo>0?togo.toFixed(1):'0');
+  }
+
+  /* ---------- lift history ---------- */
+
+  function buildProgPicker(){
+    var sel=$('pw');
+    sel.textContent='';
+    STRENGTH.concat(ATHLETIC).forEach(function(w){
+      var o=document.createElement('option');
+      o.value=w; o.textContent=w;
+      sel.appendChild(o);
+    });
+    sel.addEventListener('change',paintProg);
+  }
+
+  function paintProg(){
+    var sel=$('pw'), rows=$('prog-rows');
+    if(!sel||!rows) return;
+    var want=sel.value;
+    rows.textContent='';
+    var found=0;
+    for(var n=1;n<=TOTAL;n++){
+      var d=day(n);
+      if(d.w!==want) continue;
+      found++;
+      var r=document.createElement('div');
+      r.className='prow';
+      var b=document.createElement('b');
+      var dt=dateFor(n);
+      b.textContent=(dt?fmt(dt):'Day '+n)+(d.done?'':' ·');
+      var s=document.createElement('span');
+      s.textContent=d.lifts?d.lifts:(d.done?'no weights noted':'not done yet');
+      if(!d.lifts) s.style.color='#a8b0b8';
+      r.appendChild(b); r.appendChild(s);
+      rows.appendChild(r);
+    }
+    if(!found){
+      var e=document.createElement('div');
+      e.className='empty';
+      e.textContent='This workout is not on your calendar yet.';
+      rows.appendChild(e);
+    }
+  }
+
+  /* ---------- weight ---------- */
+
+  function sorted(){
+    return state.weights.slice().sort(function(a,b){return a.d<b.d?-1:(a.d>b.d?1:0)});
+  }
+
+  function rolling(){
+    var s=sorted();
+    if(!s.length) return null;
+    var last=s[s.length-1].d;
+    var p=last.split('-');
+    var cut=new Date(+p[0],+p[1]-1,+p[2]);
+    cut.setDate(cut.getDate()-6);
+    var sum=0,c=0;
+    for(var i=0;i<s.length;i++){
+      var q=s[i].d.split('-');
+      var dd=new Date(+q[0],+q[1]-1,+q[2]);
+      if(dd>=cut){sum+=s[i].w;c++;}
+    }
+    return c?sum/c:null;
+  }
+
+  function currentWeight(){
+    var r=rolling();
+    if(r!==null) return r;
+    if(state.sw) return state.sw;
+    return 186;
+  }
+
+  function paintStats(){
+    var s=sorted();
+    if(!s.length){
+      $('s-now').textContent='—';$('s-rate').textContent='—';
+      $('s-total').textContent='—';$('s-eta').textContent='—';
+      return;
+    }
+    var r=rolling();
+    $('s-now').textContent=r!==null?r.toFixed(1):'—';
+    $('s-total').textContent=(state.sw-s[s.length-1].w).toFixed(1);
+
+    var rate=null;
+    if(s.length>=2){
+      var a=s[0], b=s[s.length-1];
+      var pa=a.d.split('-'), pb=b.d.split('-');
+      var da=new Date(+pa[0],+pa[1]-1,+pa[2]), db=new Date(+pb[0],+pb[1]-1,+pb[2]);
+      var wk=(db-da)/(1000*60*60*24*7);
+      if(wk>0) rate=(a.w-b.w)/wk;
+    }
+    $('s-rate').textContent=rate!==null?rate.toFixed(2):'—';
+
+    if(rate&&rate>0&&r!==null&&r>state.gw){
+      var weeks=(r-state.gw)/rate;
+      var eta=new Date();
+      eta.setDate(eta.getDate()+Math.round(weeks*7));
+      $('s-eta').textContent=fmt(eta);
+    }else{
+      $('s-eta').textContent=r!==null&&r<=state.gw?'there':'—';
+    }
+  }
+
+  function bucketed(){
+    var s=sorted();
+    if(view==='d') return s;
+    var map={};
+    s.forEach(function(e){
+      var p=e.d.split('-');
+      var k=view==='m'?(p[0]+'-'+p[1]):weekKey(e.d);
+      if(!map[k]) map[k]={sum:0,c:0,d:e.d};
+      map[k].sum+=e.w; map[k].c++; map[k].d=e.d;
+    });
+    return Object.keys(map).sort().map(function(k){
+      return {d:map[k].d,w:map[k].sum/map[k].c};
+    });
+  }
+
+  function weekKey(ds){
+    var p=ds.split('-');
+    var d=new Date(+p[0],+p[1]-1,+p[2]);
+    d.setDate(d.getDate()-d.getDay());
+    return iso(d);
+  }
+
+  function paintChart(){
+    var svg=$('chart');
+    svg.textContent='';
+    var pts=bucketed();
+    $('empty').style.display=pts.length?'none':'block';
+    if(!pts.length) return;
+
+    var W=640,H=260,L=44,R=14,T=16,B=30;
+    var vals=pts.map(function(p){return p.w}).concat([state.gw]);
+    var lo=Math.min.apply(null,vals)-1.2, hi=Math.max.apply(null,vals)+1.2;
+    if(hi-lo<3){hi=lo+3}
+
+    function x(i){return pts.length<2?L+(W-L-R)/2:L+i*(W-L-R)/(pts.length-1)}
+    function y(v){return T+(hi-v)*(H-T-B)/(hi-lo)}
+
+    function el(t,a){
+      var e=document.createElementNS('http://www.w3.org/2000/svg',t);
+      for(var k in a) e.setAttribute(k,a[k]);
+      return e;
+    }
+
+    for(var g=0;g<4;g++){
+      var gv=lo+(hi-lo)*g/3;
+      svg.appendChild(el('line',{x1:L,x2:W-R,y1:y(gv),y2:y(gv),stroke:'#eef0f2','stroke-width':1}));
+      var tx=el('text',{x:L-7,y:y(gv)+4,'text-anchor':'end','font-size':11,fill:'#5c656f','font-family':'Barlow, sans-serif'});
+      tx.textContent=gv.toFixed(1);
+      svg.appendChild(tx);
+    }
+
+    svg.appendChild(el('line',{x1:L,x2:W-R,y1:y(state.gw),y2:y(state.gw),stroke:'#0f6b46','stroke-width':1.5,'stroke-dasharray':'5 4'}));
+
+    var dpath=pts.map(function(p,i){return (i?'L':'M')+x(i).toFixed(1)+' '+y(p.w).toFixed(1)}).join(' ');
+    svg.appendChild(el('path',{d:dpath,fill:'none',stroke:'#c3c9d0','stroke-width':1.5}));
+
+    if(view==='d'&&pts.length>=3){
+      var avg=[];
+      for(var i=0;i<pts.length;i++){
+        var s2=0,c2=0;
+        for(var j=Math.max(0,i-6);j<=i;j++){s2+=pts[j].w;c2++}
+        avg.push(s2/c2);
+      }
+      var apath=avg.map(function(v,i){return (i?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1)}).join(' ');
+      svg.appendChild(el('path',{d:apath,fill:'none',stroke:'#16191d','stroke-width':2.5,'stroke-linejoin':'round'}));
+    }
+
+    pts.forEach(function(p,i){
+      svg.appendChild(el('circle',{cx:x(i),cy:y(p.w),r:2.6,fill:'#5c656f'}));
+    });
+
+    var f=el('text',{x:L,y:H-9,'font-size':11,fill:'#5c656f','font-family':'Barlow, sans-serif'});
+    f.textContent=pts[0].d;
+    svg.appendChild(f);
+    if(pts.length>1){
+      var l=el('text',{x:W-R,y:H-9,'text-anchor':'end','font-size':11,fill:'#5c656f','font-family':'Barlow, sans-serif'});
+      l.textContent=pts[pts.length-1].d;
+      svg.appendChild(l);
+    }
+  }
+
+  function paintEntries(){
+    var box=$('entries');
+    box.textContent='';
+    var s=sorted().slice(-14).reverse();
+    s.forEach(function(e){
+      var b=document.createElement('button');
+      b.className='ent';
+      b.type='button';
+      b.textContent=e.d+'  '+e.w.toFixed(1);
+      b.title='Tap to delete';
+      b.addEventListener('click',function(){
+        state.weights=state.weights.filter(function(z){return !(z.d===e.d&&z.w===e.w)});
+        save(); paintAllWeight(); paintCounts(); paintMacros();
+      });
+      box.appendChild(b);
+    });
+  }
+
+  function paintAllWeight(){
+    paintStats(); paintChart(); paintEntries();
+  }
+
+  /* ---------- measurements ---------- */
+
+  var SITES=[
+    ['chest','Chest'],['rarm','R. arm'],['larm','L. arm'],['waist','Waist'],
+    ['hips','Hips'],['rthigh','R. thigh'],['lthigh','L. thigh']
+  ];
+  var COLS=['a','b','c'];
+
+  function buildMeas(){
+    var body=$('mbody');
+    if(!body) return;
+    body.textContent='';
+    SITES.forEach(function(site){
+      var tr=document.createElement('tr');
+      var td0=document.createElement('td');
+      td0.textContent=site[1];
+      tr.appendChild(td0);
+      COLS.forEach(function(c){
+        var td=document.createElement('td');
+        var inp=document.createElement('input');
+        inp.type='number'; inp.step='0.1';
+        inp.id='m-'+site[0]+'-'+c;
+        inp.setAttribute('aria-label',site[1]+' on '+(c==='a'?'day 1':(c==='b'?'day 45':'day 90')));
+        inp.addEventListener('input',function(){
+          if(!state.meas[c]) state.meas[c]={};
+          var v=parseFloat(inp.value);
+          if(isFinite(v)) state.meas[c][site[0]]=v; else delete state.meas[c][site[0]];
+          save(); paintMeas();
+        });
+        td.appendChild(inp);
+        tr.appendChild(td);
+      });
+      var tdc=document.createElement('td');
+      tdc.id='mc-'+site[0];
+      tdc.style.textAlign='right';
+      tdc.style.color='#5c656f';
+      tr.appendChild(tdc);
+      body.appendChild(tr);
+    });
+
+    var tot=document.createElement('tr');
+    tot.className='total';
+    var t0=document.createElement('td'); t0.textContent='Total inches';
+    tot.appendChild(t0);
+    COLS.forEach(function(c){
+      var td=document.createElement('td');
+      td.className='n'; td.id='mt-'+c;
+      tot.appendChild(td);
+    });
+    var tc=document.createElement('td');
+    tc.className='n'; tc.id='mt-change';
+    tot.appendChild(tc);
+    body.appendChild(tot);
+  }
+
+  function colTotal(c){
+    var m=state.meas[c]||{}, sum=0, n=0;
+    SITES.forEach(function(s2){
+      if(isFinite(m[s2[0]])){sum+=m[s2[0]];n++}
+    });
+    return n===SITES.length?sum:null;
+  }
+
+  function lastCol(){
+    for(var i=COLS.length-1;i>=0;i--){
+      if(colTotal(COLS[i])!==null) return COLS[i];
+    }
+    return null;
+  }
+
+  function paintMeas(){
+    COLS.forEach(function(c){
+      var t=colTotal(c), el=$('mt-'+c);
+      if(el) el.textContent=t===null?'—':t.toFixed(1);
+    });
+
+    SITES.forEach(function(site){
+      var m=state.meas, el=$('mc-'+site[0]);
+      if(!el) return;
+      var first=null,last=null;
+      COLS.forEach(function(c){
+        var v=(m[c]||{})[site[0]];
+        if(isFinite(v)){ if(first===null) first=v; last=v; }
+      });
+      if(first===null||last===null||first===last){el.textContent='';return}
+      var diff=last-first;
+      el.textContent=(diff>0?'+':'')+diff.toFixed(1);
+      el.style.color=diff<0?'#0f6b46':'#8a5a00';
+    });
+
+    var a=colTotal('a'), z=lastCol();
+    var tc=$('mt-change');
+    if(tc){
+      if(a===null||z===null||z==='a'){tc.textContent='—';tc.style.color='#5c656f'}
+      else{
+        var d2=colTotal(z)-a;
+        tc.textContent=(d2>0?'+':'')+d2.toFixed(1);
+        tc.style.color=d2<0?'#0f6b46':'#8a5a00';
+      }
+    }
+
+    paintWHR();
+  }
+
+  function paintWHR(){
+    var el=$('whr');
+    if(!el) return;
+    var waist=null;
+    for(var i=COLS.length-1;i>=0;i--){
+      var v=(state.meas[COLS[i]]||{}).waist;
+      if(isFinite(v)){waist=v;break}
+    }
+    if(waist===null||!state.ht){
+      el.textContent='Measure your waist at the navel, relaxed, at the end of a normal breath out. It is the single most useful number here \u2014 the scale cannot tell muscle from fat, and this can.';
+      return;
+    }
+    var r=waist/state.ht;
+    var verdict=r<0.5?'under the 0.5 threshold generally treated as healthy':
+      (r<0.55?'above 0.5, which is the usual first flag':'above 0.55, the point where the risk discussion gets more serious');
+    el.textContent='Waist-to-height ratio: '+r.toFixed(3)+'. That is '+verdict+
+      '. At '+state.ht+' inches tall, a waist under '+(state.ht*0.5).toFixed(1)+' inches keeps you below it.';
+  }
+
+  /* ---------- macros ---------- */
+
+  function paintMacros(){
+    var kg=currentWeight()*0.45359237;
+    var cm=state.ht*2.54;
+    var bmr=10*kg+6.25*cm-5*state.ag+5;
+    var tdee=bmr*1.55;
+    var cal=Math.round((tdee-450)/10)*10;
+    var pro=Math.round(kg*2.1);
+    var carb=Math.round(state.cb);
+    var fatFloor=Math.round(kg*0.8);
+    var fat=Math.round((cal-pro*4-carb*4)/9);
+    if(fat<fatFloor){
+      fat=fatFloor;
+      carb=Math.max(0,Math.round((cal-pro*4-fat*9)/4));
+    }
+    $('m-cal').textContent=cal;
+    $('m-pro').textContent=pro;
+    $('m-carb').textContent=carb;
+    $('m-fat').textContent=fat;
+    $('m-math').textContent=
+      'Mifflin\u2013St Jeor at '+currentWeight().toFixed(1)+' lb: BMR '+Math.round(bmr)+
+      ', \u00d7 1.55 activity = '+Math.round(tdee)+
+      ', minus a 450 deficit. Protein at 2.1 g/kg, carbs capped, fat takes the remainder above a 0.8 g/kg floor. '+
+      'The 1.55 is the softest number here \u2014 check it against real results at week 3.';
+  }
+
+  /* ---------- backup ---------- */
+
+  function backup(){
+    var name='gennext-backup-'+iso(new Date())+'.json';
+    var text=JSON.stringify(state,null,2);
+    var a=document.createElement('a');
+    a.download=name;
+    try{
+      var blob=new Blob([text],{type:'application/json'});
+      a.href=URL.createObjectURL(blob);
+      document.body.appendChild(a); a.click();
+      setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},400);
+    }catch(e){
+      a.href='data:application/json;charset=utf-8,'+encodeURIComponent(text);
+      document.body.appendChild(a); a.click();
+      setTimeout(function(){a.remove()},400);
+    }
+  }
+
+  function restore(file){
+    var r=new FileReader();
+    r.onload=function(){
+      try{
+        var p=JSON.parse(String(r.result));
+        if(!p||typeof p!=='object'||!p.days) throw new Error('bad');
+        state.start=p.start||'';
+        state.sw=num(p.sw,186); state.gw=num(p.gw,177);
+        state.ht=num(p.ht,70); state.ag=num(p.ag,42); state.cb=num(p.cb,125);
+        state.days=p.days; state.weights=Array.isArray(p.weights)?p.weights:[];
+        state.meas=(p.meas&&typeof p.meas==='object')?p.meas:{a:{},b:{},c:{}};
+        ['a','b','c'].forEach(function(c){if(!state.meas[c])state.meas[c]={}});
+        try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e2){}
+        try{location.reload()}catch(e3){fillInputs();paintAll()}
+        fillInputs(); paintAll();
+      }catch(e){
+        $('saved').textContent='That file was not a Gen Next backup. Nothing changed.';
+      }
+    };
+    r.readAsText(file);
+  }
+
+  /* ---------- wiring ---------- */
+
+  function fillMeas(){
+    SITES.forEach(function(site){
+      COLS.forEach(function(c){
+        var el=$('m-'+site[0]+'-'+c);
+        if(!el) return;
+        var v=(state.meas[c]||{})[site[0]];
+        el.value=isFinite(v)?v:'';
+      });
+    });
+  }
+
+  function fillInputs(){
+    $('start').value=state.start||'';
+    $('sw').value=state.sw;
+    $('gw').value=state.gw;
+    $('ht').value=state.ht;
+    $('ag').value=state.ag;
+    $('cb').value=state.cb;
+  }
+
+  function paintAll(){
+    paintCal(); paintStartNote(); paintRail(); paintCounts();
+    paintAllWeight(); paintMacros(); paintProg(); fillMeas(); paintMeas();
+  }
+
+  function wire(){
+    $('start').addEventListener('change',function(){
+      state.start=$('start').value; save(); paintCal(); paintStartNote(); paintProg();
+    });
+    $('sw').addEventListener('input',function(){
+      state.sw=num($('sw').value,186); save(); paintStats(); paintCounts(); paintMacros();
+    });
+    $('gw').addEventListener('input',function(){
+      state.gw=num($('gw').value,177); save(); paintCounts(); paintChart(); paintStats();
+    });
+    ['ht','ag','cb'].forEach(function(k){
+      $(k).addEventListener('input',function(){
+        state[k]=num($(k).value,state[k]); save(); paintMacros(); if(k==='ht') paintWHR();
+      });
+    });
+
+    $('ladd').addEventListener('click',function(){
+      var d=$('ld').value, w=parseFloat($('lw').value);
+      if(!d||!isFinite(w)) return;
+      state.weights=state.weights.filter(function(z){return z.d!==d});
+      state.weights.push({d:d,w:w});
+      $('lw').value='';
+      save(); paintAllWeight(); paintCounts(); paintMacros();
+    });
+
+    $('t-d').addEventListener('click',function(){setView('d')});
+    $('t-w').addEventListener('click',function(){setView('w')});
+    $('t-m').addEventListener('click',function(){setView('m')});
+
+    $('print').addEventListener('click',function(){window.print()});
+    $('backup').addEventListener('click',backup);
+    $('restorebtn').addEventListener('click',function(){$('restorefile').click()});
+    $('restorefile').addEventListener('change',function(){
+      if(this.files&&this.files[0]) restore(this.files[0]);
+      this.value='';
+    });
+    $('reset').addEventListener('click',function(){
+      if(!window.confirm('Clear every check mark, weight and note, and restore the official calendar? Back up first if you want to keep your data.')) return;
+      state={start:'',sw:186,gw:177,ht:70,ag:42,cb:125,days:{},weights:[],meas:{a:{},b:{},c:{}}};
+      seedAll();
+      try{localStorage.removeItem(KEY)}catch(e){}
+      fillInputs(); paintAll();
+    });
+  }
+
+  function setView(v){
+    view=v;
+    $('t-d').setAttribute('aria-pressed',String(v==='d'));
+    $('t-w').setAttribute('aria-pressed',String(v==='w'));
+    $('t-m').setAttribute('aria-pressed',String(v==='m'));
+    paintChart();
+  }
+
+  load();
+  buildCal();
+  buildMeas();
+  buildProgPicker();
+  fillInputs();
+  wire();
+  paintAll();
+  try{
+    if(!$('ld').value) $('ld').value=iso(new Date());
+  }catch(e){}
+})();
+</script>
